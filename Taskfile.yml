@@ -1,0 +1,10 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    dir: cmd/goraytracer
+    cmds:
+      - rm -f goraytracer
+      - go build .
