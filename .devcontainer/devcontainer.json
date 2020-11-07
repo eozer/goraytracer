@@ -1,0 +1,67 @@
+// NOTE: Create .devcontainer directory OR .devcontainer.json directly at the source of the repo.
+// NOTE: Get ms-vscode-remote.remote-containers to work with devcontainer
+{
+    "name": "golang-devcontainer",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "VARIANT": "1"
+        }
+    },
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "go.useGoProxyToCheckForToolUpdates": false,
+        "go.gopath": "/go",
+        "go.useLanguageServer": true,
+        "go.goroot": "/usr/local/go",
+        "go.toolsGopath": "/go/bin",
+        "[go]": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": true,
+            },
+            // Optional: Disable snippets, as they conflict with completion ranking.
+            "editor.snippetSuggestions": "none",
+        },
+        "[go.mod]": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": true,
+            },
+        },
+        "go.delveConfig": {
+            "dlvLoadConfig": {
+                "followPointers": true,
+                "maxVariableRecurse": 1,
+                "maxStringLen": 64,
+                "maxArrayValues": 64,
+                "maxStructFields": -1
+            },
+            "apiVersion": 2,
+            "showGlobalVariables": true
+        },
+        "gopls": {
+            // Add parameter placeholders when completing a function.
+            "usePlaceholders": true,
+            // If true, enable additional analyses with staticcheck.
+            // Warning: This will significantly increase memory usage.
+            "staticcheck": true,
+        }
+    },
+    "extensions": [
+        "golang.go"
+    ],
+    // Ports used by
+    // godoc 6060
+    "forwardPorts": [
+        "6060"
+    ],
+    "remoteUser": "vscode",
+    "postStartCommand": "echo 'Container is started, will execute postStartCommand'",
+    "postCreateCommand": "echo 'Container is created, will execute postCreateCommand' && go version"
+}
