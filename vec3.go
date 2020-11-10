@@ -56,11 +56,11 @@ type Vector interface {
 	GetY() float64
 	GetZ() float64
 	GetAxe(i int) float64
-	Neg()
-	Add(*Vec3)
-	Sub(*Vec3)
-	Mult(float64)
-	Div(float64)
+	Neg() *Vec3
+	Add(*Vec3) *Vec3
+	Sub(*Vec3) *Vec3
+	Mult(float64) *Vec3
+	Div(float64) *Vec3
 	Len() float64
 	SqrLen() float64
 	Unit(*Vec3) Vec3
@@ -87,30 +87,37 @@ func (v *Vec3) GetAxe(i int) float64 {
 	return v.axes[i]
 }
 
-func (v *Vec3) Neg() Vec3 {
-	return Vec3{[3]float64{-v.axes[0], -v.axes[1], -v.axes[2]}}
+func (v *Vec3) Neg() *Vec3 {
+	v.axes[0] = -v.axes[0]
+	v.axes[1] = -v.axes[1]
+	v.axes[2] = -v.axes[2]
+	return v
 }
 
-func (v *Vec3) Add(v2 *Vec3) {
+func (v *Vec3) Add(v2 *Vec3) *Vec3 {
 	v.axes[0] += v2.axes[0]
 	v.axes[1] += v2.axes[1]
 	v.axes[2] += v2.axes[2]
+	return v
 }
 
-func (v *Vec3) Sub(v2 *Vec3) {
+func (v *Vec3) Sub(v2 *Vec3) *Vec3 {
 	v.axes[0] -= v2.axes[0]
 	v.axes[1] -= v2.axes[1]
 	v.axes[2] -= v2.axes[2]
+	return v
 }
 
-func (v *Vec3) Mult(t float64) {
+func (v *Vec3) Mult(t float64) *Vec3 {
 	v.axes[0] *= t
 	v.axes[1] *= t
 	v.axes[2] *= t
+	return v
 }
 
-func (v *Vec3) Div(t float64) {
+func (v *Vec3) Div(t float64) *Vec3 {
 	v.Mult(1 / t)
+	return v
 }
 
 func (v *Vec3) Unit() Vec3 {
