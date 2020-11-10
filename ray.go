@@ -26,6 +26,6 @@ func (r *Ray) GetDirection() Vec3 {
 func (r *Ray) At(t float64) Point3 {
 	// origin + t * direction
 	tdotd := Mult(t, r.direction)
-	optdotd := Add(&r.origin, &tdotd)
+	optdotd := Add(r.origin, tdotd)
 	return optdotd
 }

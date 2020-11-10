@@ -1,9 +1,10 @@
 package goraytracer
 
-import "math"
+import (
+	"math"
+)
 
 type Vec3 struct {
-	// NOTE: Since we provide NewVec3 we could make this private: axes -> axes
 	axes [3]float64
 }
 
@@ -14,29 +15,35 @@ func NewVec3(x, y, z float64) Vec3 {
 	return Vec3{axes: [3]float64{x, y, z}}
 }
 
-func Add(v1 *Vec3, v2 *Vec3) Vec3 {
-	return Vec3{[3]float64{v1.axes[0] + v2.axes[0], v1.axes[1] + v2.axes[1], v1.axes[2] + v2.axes[2]}}
+func Add(v1, v2 Vec3) Vec3 {
+	v1.Add(v2)
+	return v1
 }
 
-func Subtract(v1 *Vec3, v2 *Vec3) Vec3 {
-	return Vec3{[3]float64{v1.axes[0] - v2.axes[0], v1.axes[1] - v2.axes[1], v1.axes[2] - v2.axes[2]}}
+func Subtract(v1, v2 Vec3) Vec3 {
+	v1.Sub(v2)
+	return v1
 }
 
-// NOTE: v is not pointer and now inconsistent with other utility functions.
 func Mult(t float64, v Vec3) Vec3 {
 	v.Mult(t)
 	return v
 }
 
-func ElemMult(v1 *Vec3, v2 *Vec3) Vec3 {
+func Div(t float64, v Vec3) Vec3 {
+	v.Div(t)
+	return v
+}
+
+func ElemMult(v1, v2 *Vec3) Vec3 {
 	return Vec3{[3]float64{v1.axes[0] * v2.axes[0], v1.axes[1] * v2.axes[1], v1.axes[2] * v2.axes[2]}}
 }
 
-func Dot(v1 *Vec3, v2 *Vec3) float64 {
+func Dot(v1, v2 *Vec3) float64 {
 	return (v1.axes[0] * v2.axes[0]) + (v1.axes[1] * v2.axes[1]) + (v1.axes[2] * v2.axes[2])
 }
 
-func Cross(v1 *Vec3, v2 *Vec3) Vec3 {
+func Cross(v1, v2 *Vec3) Vec3 {
 	return Vec3{[3]float64{
 		(v1.axes[1]*v2.axes[2] - v1.axes[2]*v2.axes[1]),
 		(v1.axes[2]*v2.axes[0] - v1.axes[0]*v2.axes[2]),
@@ -44,7 +51,6 @@ func Cross(v1 *Vec3, v2 *Vec3) Vec3 {
 	}}
 }
 
-// NOTE: v is not pointer and now inconsistent with other utility functions.
 func UnitVector(v Vec3) Vec3 {
 	v.Div(v.Len())
 	return v
@@ -94,14 +100,14 @@ func (v *Vec3) Neg() *Vec3 {
 	return v
 }
 
-func (v *Vec3) Add(v2 *Vec3) *Vec3 {
+func (v *Vec3) Add(v2 Vec3) *Vec3 {
 	v.axes[0] += v2.axes[0]
 	v.axes[1] += v2.axes[1]
 	v.axes[2] += v2.axes[2]
 	return v
 }
 
-func (v *Vec3) Sub(v2 *Vec3) *Vec3 {
+func (v *Vec3) Sub(v2 Vec3) *Vec3 {
 	v.axes[0] -= v2.axes[0]
 	v.axes[1] -= v2.axes[1]
 	v.axes[2] -= v2.axes[2]
