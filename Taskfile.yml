@@ -2,9 +2,15 @@
 
 version: '3'
 
+vars:
+  BIN: goraytracer
+  OUTFILE: out.ppm
+
 tasks:
   default:
-    dir: cmd/goraytracer
+    dir: cmd/"{{.BIN}}"
     cmds:
-      - rm -f goraytracer
+      - rm -f "{{.BIN}}"
       - go build .
+      - rm -f "{{.OUTFILE}}"
+      - ./"{{.BIN}}" > ../../"{{.OUTFILE}}"
