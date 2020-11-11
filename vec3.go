@@ -15,6 +15,10 @@ func NewVec3(x, y, z float64) Vec3 {
 	return Vec3{axes: [3]float64{x, y, z}}
 }
 
+func NewPoint3(x, y, z float64) Vec3 {
+	return NewVec3(x, y, z)
+}
+
 func Add(v1, v2 Vec3) Vec3 {
 	v1.Add(v2)
 	return v1
@@ -35,15 +39,15 @@ func Div(t float64, v Vec3) Vec3 {
 	return v
 }
 
-func ElemMult(v1, v2 *Vec3) Vec3 {
+func ElemMult(v1, v2 Vec3) Vec3 {
 	return Vec3{[3]float64{v1.axes[0] * v2.axes[0], v1.axes[1] * v2.axes[1], v1.axes[2] * v2.axes[2]}}
 }
 
-func Dot(v1, v2 *Vec3) float64 {
+func Dot(v1, v2 Vec3) float64 {
 	return (v1.axes[0] * v2.axes[0]) + (v1.axes[1] * v2.axes[1]) + (v1.axes[2] * v2.axes[2])
 }
 
-func Cross(v1, v2 *Vec3) Vec3 {
+func Cross(v1, v2 Vec3) Vec3 {
 	return Vec3{[3]float64{
 		(v1.axes[1]*v2.axes[2] - v1.axes[2]*v2.axes[1]),
 		(v1.axes[2]*v2.axes[0] - v1.axes[0]*v2.axes[2]),

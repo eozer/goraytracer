@@ -21,6 +21,9 @@ func WriteColor(writer io.Writer, pixelColor Color) {
 
 // RayColor creates a gradient color from c1 to c2 along Y axesray's unit vector.
 func RayColor(ray *Ray) Color {
+	if HitSphere(NewPoint3(0.0, 0.0, -1.0), 0.5, ray) {
+		return NewColor(1, 0, 0)
+	}
 	unitdir := UnitVector(ray.GetDirection())
 	t := 0.5 * (unitdir.GetY() + 1.0)
 	// fmt.Fprintf(os.Stderr, "\n%f \n", unitdir.GetY())
