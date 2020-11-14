@@ -67,8 +67,8 @@ type Vector interface {
 	GetZ() float64
 	GetAxe(i int) float64
 	Neg() *Vec3
-	Add(*Vec3) *Vec3
-	Sub(*Vec3) *Vec3
+	Add(Vec3) *Vec3
+	Sub(Vec3) *Vec3
 	Mult(float64) *Vec3
 	Div(float64) *Vec3
 	Len() float64

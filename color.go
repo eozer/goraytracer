@@ -3,6 +3,7 @@ package goraytracer
 import (
 	"fmt"
 	"io"
+	"math"
 )
 
 type Color = Vec3
@@ -20,16 +21,16 @@ func WriteColor(writer io.Writer, pixelColor Color) {
 }
 
 // RayColor creates a gradient color from c1 to c2 along Y axesray's unit vector.
-func RayColor(ray *Ray) Color {
-	t := HitSphere(NewPoint3(0.0, 0.0, -1.0), 0.5, ray)
-	if t > 0.0 {
-		normal := UnitVector(Subtract(ray.At(t), NewVec3(0, 0, -1)))
-		ns := NewColor(normal.GetX()+1.0, normal.GetY()+1.0, normal.GetZ()+1.0)
-		ns.Mult(0.5)
-		return ns
+func RayColor(ray *Ray, world Hittable) Color {
+	rec := HitRecord{}
+	pInf := math.Inf(1)
+	if world.Hit(ray, 0, pInf, &rec) {
+		g := Add(rec.Normal, NewColor(1.0, 1.0, 1.0))
+		g.Mult(0.5)
+		return g
 	}
-	unitdir := UnitVector(ray.GetDirection())
-	t = 0.5 * (unitdir.GetY() + 1.0)
+	unitdir := ray.GetDirection().Unit()
+	t := 0.5 * (unitdir.GetY() + 1.0)
 	// fmt.Fprintf(os.Stderr, "\n%f \n", unitdir.GetY())
 	c1 := NewColor(1.0, 1.0, 1.0)
 	c2 := NewColor(0.5, 0.7, 1.0)

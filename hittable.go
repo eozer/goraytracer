@@ -1,15 +1,33 @@
 package goraytracer
 
-import "math"
+// Hittable represents that a material is ray-hittable.
+type Hittable interface {
+	// Hit(, double t_min, double t_max, hit_record& rec) bool
+	Hit(*Ray, float64, float64, *HitRecord) bool
+}
 
-func HitSphere(center Point3, radius float64, ray *Ray) float64 {
-	oc := Subtract(ray.GetOrigin(), center)
-	a := Dot(ray.GetDirection(), ray.GetDirection())
-	b := 2.0 * Dot(oc, ray.GetDirection())
-	c := Dot(oc, oc) - radius*radius
-	discriminant := b*b - 4*a*c
-	if discriminant < 0.0 {
-		return -1.0
+type hitrecord interface {
+	SetFaceNormal(*Ray, *Vec3)
+}
+
+// HitRecord is a type used for storing the results of Hittable.Hit.
+type HitRecord struct {
+	P         Point3
+	Normal    Vec3
+	T         float64
+	FrontFace bool
+}
+
+func NewHitRecord(p Point3, n Vec3, t float64, ff bool) HitRecord {
+	return HitRecord{p, n, t, ff}
+}
+
+func (hr *HitRecord) SetFaceNormal(ray *Ray, outwardNormal *Vec3) {
+	hr.FrontFace = Dot(*ray.GetDirection(), *outwardNormal) < 0.0
+	c := outwardNormal.Clone()
+	if hr.FrontFace {
+		hr.Normal = c
+	} else {
+		hr.Normal = *c.Neg()
 	}
-	return (-b - math.Sqrt(discriminant)) / (2.0 * a)
 }
