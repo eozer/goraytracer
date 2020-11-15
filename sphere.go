@@ -4,18 +4,19 @@ import "math"
 
 type sphere interface {
 	Hittable
-	GetCenter() Point3
+	GetCenter() *Point3
 	GetRadius() float64
 }
 
 type Sphere struct {
 	center Point3
 	radius float64
+	mat    Material
 }
 
 // NewSphere returns a new sphere at center with radius
-func NewSphere(center Point3, radius float64) Sphere {
-	return Sphere{center, radius}
+func NewSphere(center Point3, radius float64, mat Material) Sphere {
+	return Sphere{center, radius, mat}
 }
 
 func (s *Sphere) Hit(ray *Ray, tMin float64, tMax float64, rec *HitRecord) bool {
@@ -45,6 +46,7 @@ func (s *Sphere) Hit(ray *Ray, tMin float64, tMax float64, rec *HitRecord) bool 
 	outwardNormal := Subtract(rec.P, s.center)
 	outwardNormal.Div(s.radius)
 	rec.SetFaceNormal(ray, &outwardNormal)
+	rec.Mat = s.mat
 	return true
 }
 

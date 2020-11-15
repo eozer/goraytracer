@@ -100,6 +100,10 @@ func UnitVector(v Vec3) Vec3 {
 	return v
 }
 
+func Reflect(v, n Vec3) Vec3 {
+	return Subtract(v, Mult(2*Dot(v, n), n))
+}
+
 type Vector interface {
 	Clone() Vec3
 	GetX() float64
@@ -114,6 +118,7 @@ type Vector interface {
 	Len() float64
 	SqrLen() float64
 	Unit(*Vec3) Vec3
+	IsNearZero() bool
 }
 
 func (v *Vec3) Clone() Vec3 {
@@ -182,4 +187,10 @@ func (v *Vec3) Len() float64 {
 
 func (v *Vec3) SqrLen() float64 {
 	return v.axes[0]*v.axes[0] + v.axes[1]*v.axes[1] + v.axes[2]*v.axes[2]
+}
+
+// IsNearZero returns true if all of the axes of v are near to zero.
+func (v *Vec3) IsNearZero() bool {
+	const tol float64 = 1e-8
+	return (math.Abs(v.axes[0]) < tol) && (math.Abs(v.axes[1]) < tol) && (math.Abs(v.axes[2]) < tol)
 }

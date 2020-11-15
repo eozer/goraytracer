@@ -40,3 +40,22 @@ func TestSubtract(t *testing.T) {
 		}
 	}
 }
+
+func TestReflect(t *testing.T) {
+	for _, test := range []struct {
+		v    Vec3
+		n    Vec3
+		want Vec3
+	}{
+		{Vec3{}, Vec3{}, Vec3{}},
+		{
+			v:    Vec3{[3]float64{-1.0, -2.0, -3.0}},
+			n:    Vec3{[3]float64{1.0, 2.0, 3.0}},
+			want: Vec3{[3]float64{27.0, 54.0, 81.0}}},
+	} {
+		got := Reflect(test.v, test.n)
+		if !reflect.DeepEqual(test.want, got) {
+			t.Errorf("want %v, got %v", test.want, got)
+		}
+	}
+}

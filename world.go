@@ -13,18 +13,13 @@ type World struct {
 }
 
 func (w *World) Hit(ray *Ray, tMin float64, tMax float64, rec *HitRecord) bool {
-	tmphr := HitRecord{}
 	isHit := false
 	closestSoFar := tMax
 	//
 	for _, obj := range w.objects {
-		if obj.Hit(ray, tMin, closestSoFar, &tmphr) {
+		if obj.Hit(ray, tMin, closestSoFar, rec) {
 			isHit = true
 			closestSoFar = rec.T
-			// NOTE: We can directl use rec instead of tmphr
-			rec.Normal = tmphr.Normal
-			rec.P = tmphr.P
-			rec.T = tmphr.T
 		}
 	}
 

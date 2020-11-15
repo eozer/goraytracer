@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	// TODO: Change GOPATH in .devcontainer
-	"goraytracer"
+	grt "goraytracer"
 	rand "math/rand"
 	"os"
 )
@@ -20,28 +20,45 @@ const (
 
 func main() {
 	// Set the world
-	world := goraytracer.World{}
-	sphere := goraytracer.NewSphere(goraytracer.NewPoint3(0, 0, -1.0), 0.5)
-	world.Add(&sphere)
-	ground := goraytracer.NewSphere(goraytracer.NewPoint3(0, -100.5, -1.0), 100.0)
-	world.Add(&ground)
+	world := grt.World{}
+
+	// Draw the world
+	groundMat := grt.NewLambertian(grt.NewColor(0.8, 0.8, 0.0))
+	groundSphere := grt.NewSphere(grt.NewPoint3(0, -100.5, -1.0), 100.0, &groundMat)
+	world.Add(&groundSphere)
+
+	// Put a lambertian material to the center of the camera
+	centerMat := grt.NewLambertian(grt.NewColor(0.7, 0.3, 0.3))
+	centerSphere := grt.NewSphere(grt.NewPoint3(0, 0, -1.0), 0.5, &centerMat)
+	world.Add(&centerSphere)
+
+	// Put a reflective metal material to the left
+	leftMat := grt.NewMetal(grt.NewColor(0.8, 0.8, 0.8))
+	leftSphere := grt.NewSphere(grt.NewPoint3(-1.0, 0, -1.0), 0.5, &leftMat)
+	world.Add(&leftSphere)
+
+	// Put second reflective metal material to the right
+	rightMat := grt.NewMetal(grt.NewColor(0.8, 0.6, 0.2))
+	rightSphere := grt.NewSphere(grt.NewPoint3(1.0, 0, -1.0), 0.5, &rightMat)
+	world.Add(&rightSphere)
+
 	// Set the camera
-	camera := goraytracer.NewCamera(aspectRatio)
+	camera := grt.NewCamera(aspectRatio)
 	// See PPM specification: http://netpbm.sourceforge.net/doc/ppm.html
 	fmt.Printf("P3\n%d %d\n%d\n", imageWidth, imageHeight, maxColorValue)
 	for j := imageHeight - 1; j >= 0; j-- {
 		fmt.Fprintf(os.Stderr, "\nScanlines remaining: %d", j)
 		for i := 0; i < imageWidth; i++ {
 			// Accumulate the pixel color
-			pixelColor := goraytracer.Color{}
+			pixelColor := grt.Color{}
 			for s := 0; s < samplesPerPixel; s++ {
 				u := (float64(i) + rand.Float64()) / (imageWidth - 1)
 				v := (float64(j) + rand.Float64()) / float64(imageHeight-1)
 				ray := camera.GetRay(u, v)
-				color := goraytracer.RayColor(&ray, &world, maxDepth)
+				color := grt.RayColor(&ray, &world, maxDepth)
 				pixelColor.Add(color)
 			}
-			goraytracer.WriteColor(os.Stdout, pixelColor, samplesPerPixel)
+			grt.WriteColor(os.Stdout, pixelColor, samplesPerPixel)
 		}
 	}
 	fmt.Fprintf(os.Stderr, "\nDone\n")
