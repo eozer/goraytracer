@@ -2,6 +2,7 @@ package goraytracer
 
 import (
 	"math"
+	rand "math/rand"
 )
 
 type Vec3 struct {
@@ -17,6 +18,30 @@ func NewVec3(x, y, z float64) Vec3 {
 
 func NewPoint3(x, y, z float64) Vec3 {
 	return NewVec3(x, y, z)
+}
+
+// NewRandomVec3 returns a Vec3 in [0.0, 1.0) range.
+func NewRandomVec3() Vec3 {
+	return NewVec3(rand.Float64(), rand.Float64(), rand.Float64())
+}
+
+// NewRandomVec3From returns a Vec3 in [min, max) range.
+func NewRandomVec3From(min, max float64) Vec3 {
+	x := min + (max-min)*rand.Float64()
+	y := min + (max-min)*rand.Float64()
+	z := min + (max-min)*rand.Float64()
+	return NewVec3(x, y, z)
+}
+
+// NewRandomVec3InUnitSphere returns a Vec3 that is inside the unit sphere.
+func NewRandomVec3InUnitSphere() Vec3 {
+	for {
+		v := NewRandomVec3From(-1.0, 1.0)
+		if v.SqrLen() >= 1.0 {
+			continue
+		}
+		return v
+	}
 }
 
 func Add(v1, v2 Vec3) Vec3 {

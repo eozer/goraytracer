@@ -15,6 +15,7 @@ const (
 	imageHeight     = int(imageWidth / aspectRatio)
 	maxColorValue   = 255
 	samplesPerPixel = 100
+	maxDepth        = 50
 )
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 				u := (float64(i) + rand.Float64()) / (imageWidth - 1)
 				v := (float64(j) + rand.Float64()) / float64(imageHeight-1)
 				ray := camera.GetRay(u, v)
-				color := goraytracer.RayColor(&ray, &world)
+				color := goraytracer.RayColor(&ray, &world, maxDepth)
 				pixelColor.Add(color)
 			}
 			goraytracer.WriteColor(os.Stdout, pixelColor, samplesPerPixel)

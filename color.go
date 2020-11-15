@@ -37,15 +37,23 @@ func WriteColor(writer io.Writer, pixelColor Color, samplesPerPixel int) {
 	fmt.Fprintf(writer, "%d %d %d\n", ir, ig, ib)
 }
 
-// RayColor creates a gradient color from c1 to c2 along Y axesray's unit vector.
-func RayColor(ray *Ray, world Hittable) Color {
+func RayColor(ray *Ray, world Hittable, depth int) Color {
+	// If we've exceeded the ray bounce limit, no more light is gathered=black.
+	if depth <= 0 {
+		return Color{}
+	}
+	// Hit ray to objects in the world.
 	rec := HitRecord{}
 	pInf := math.Inf(1)
 	if world.Hit(ray, 0, pInf, &rec) {
-		g := Add(rec.Normal, NewColor(1.0, 1.0, 1.0))
-		g.Mult(0.5)
-		return g
+		target := Add(rec.P, rec.Normal)
+		target.Add(NewRandomVec3InUnitSphere())
+		bounceray := NewRay(rec.P, Subtract(target, rec.P))
+		col := RayColor(&bounceray, world, depth-1)
+		col.Mult(0.5)
+		return col
 	}
+	// Draws the world, gradient from blue to white.
 	unitdir := ray.GetDirection().Unit()
 	t := 0.5 * (unitdir.GetY() + 1.0)
 	// fmt.Fprintf(os.Stderr, "\n%f \n", unitdir.GetY())
