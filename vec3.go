@@ -48,6 +48,17 @@ func NewRandomVec3Unit() Vec3 {
 	return UnitVector(NewRandomVec3InUnitSphere())
 }
 
+func NewRandomVec3InHemisphere(normal Vec3) Vec3 {
+	unitsph := NewRandomVec3InUnitSphere()
+	// if the unit vector is in the same direction as normal vector
+	if Dot(unitsph, normal) > 0.0 {
+		// empty on purpose
+	} else {
+		unitsph.Neg()
+	}
+	return unitsph
+}
+
 func Add(v1, v2 Vec3) Vec3 {
 	v1.Add(v2)
 	return v1
