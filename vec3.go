@@ -44,6 +44,10 @@ func NewRandomVec3InUnitSphere() Vec3 {
 	}
 }
 
+func NewRandomVec3Unit() Vec3 {
+	return UnitVector(NewRandomVec3InUnitSphere())
+}
+
 func Add(v1, v2 Vec3) Vec3 {
 	v1.Add(v2)
 	return v1

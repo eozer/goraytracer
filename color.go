@@ -47,7 +47,7 @@ func RayColor(ray *Ray, world Hittable, depth int) Color {
 	pInf := math.Inf(1)
 	if world.Hit(ray, 0.001, pInf, &rec) {
 		target := Add(rec.P, rec.Normal)
-		target.Add(NewRandomVec3InUnitSphere())
+		target.Add(NewRandomVec3Unit())
 		bounceray := NewRay(rec.P, Subtract(target, rec.P))
 		col := RayColor(&bounceray, world, depth-1)
 		col.Mult(0.5)
