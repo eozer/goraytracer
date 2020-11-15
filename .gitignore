@@ -1,4 +1,4 @@
 # no binary
 cmd/goraytracer/goraytracer
-out.ppm
+*.ppm
 .vscode

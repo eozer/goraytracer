@@ -12,11 +12,28 @@ func NewColor(red, green, blue float64) Color {
 	return NewVec3(red, green, blue)
 }
 
+func ClampColor(val, min, max float64) float64 {
+	if val < min {
+		return min
+	}
+	if val > max {
+		return max
+	}
+	return val
+}
+
 // WriteColor writes pixelColor in [0, 255] scale
-func WriteColor(writer io.Writer, pixelColor Color) {
-	ir := int(255.999 * pixelColor.GetX())
-	ig := int(255.999 * pixelColor.GetY())
-	ib := int(255.999 * pixelColor.GetZ())
+func WriteColor(writer io.Writer, pixelColor Color, samplesPerPixel int) {
+	// NOTE: We accumulate pixel colors * samplesPerPixel
+	// Divide the color by the number of samples.
+	scale := 1.0 / float64(samplesPerPixel)
+	r := pixelColor.GetX() * scale
+	g := pixelColor.GetY() * scale
+	b := pixelColor.GetZ() * scale
+	// Scale colors in [0.0,1.0] back to [0, 255]
+	ir := int(256 * ClampColor(r, 0.0, 0.999))
+	ig := int(256 * ClampColor(g, 0.0, 0.999))
+	ib := int(256 * ClampColor(b, 0.0, 0.999))
 	fmt.Fprintf(writer, "%d %d %d\n", ir, ig, ib)
 }
 
