@@ -33,15 +33,20 @@ type IMetal interface {
 
 type Metal struct {
 	albedo Color
+	fuzz   float64
 }
 
-func NewMetal(color Color) Metal {
-	return Metal{albedo: color}
+func NewMetal(albedo Color, fuzz float64) Metal {
+	f := 1.0
+	if fuzz < 1.0 {
+		f = fuzz
+	}
+	return Metal{albedo, f}
 }
 
 func (m *Metal) Scatter(in *Ray, rec *HitRecord) (bool, Color, Ray) {
 	reflected := Reflect(in.GetDirection().Unit(), rec.Normal)
-	scatteredRay := NewRay(rec.P, reflected)
+	scatteredRay := NewRay(rec.P, Add(reflected, Mult(m.fuzz, NewRandomVec3InUnitSphere())))
 	isScattered := (Dot(*scatteredRay.GetDirection(), rec.Normal) > 0.0)
 	return isScattered, m.albedo, scatteredRay
 }
