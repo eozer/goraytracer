@@ -45,12 +45,14 @@ func main() {
 	world.Add(&rightSphere)
 
 	// Set the camera
-	camera := grt.NewCamera(
-		grt.NewPoint3(-2.0, 2.0, 1.0),
-		grt.NewPoint3(0.0, 0.0, -1.0),
-		grt.NewVec3(0.0, 1.0, 0.0),
-		15.0,
-		aspectRatio)
+	lookfrom := grt.NewPoint3(-2.0, 2.0, 1.0)
+	lookat := grt.NewPoint3(0.0, 0.0, -1.0)
+	vup := grt.NewVec3(0.0, 1.0, 0.0)
+	dist := grt.Subtract(lookfrom, lookat)
+	vfov := 20.0
+	aperture := 2.0
+	distToFocus := dist.Len()
+	camera := grt.NewCamera(lookfrom, lookat, vup, vfov, aspectRatio, aperture, distToFocus)
 	// See PPM specification: http://netpbm.sourceforge.net/doc/ppm.html
 	fmt.Printf("P3\n%d %d\n%d\n", imageWidth, imageHeight, maxColorValue)
 	for j := imageHeight - 1; j >= 0; j-- {

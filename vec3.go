@@ -2,7 +2,7 @@ package goraytracer
 
 import (
 	"math"
-	rand "math/rand"
+	"math/rand"
 )
 
 type Vec3 struct {
@@ -57,6 +57,19 @@ func NewRandomVec3InHemisphere(normal Vec3) Vec3 {
 		unitsph.Neg()
 	}
 	return unitsph
+}
+
+func NewRandomVec3InUnitDisk() Vec3 {
+	for {
+		x := -1.0 + 2.0*rand.Float64()
+		y := -1.0 + 2.0*rand.Float64()
+		z := 0.0
+		v := NewVec3(x, y, z)
+		if v.SqrLen() >= 1 {
+			continue
+		}
+		return v
+	}
 }
 
 func Add(v1, v2 Vec3) Vec3 {
