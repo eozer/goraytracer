@@ -1,20 +1,38 @@
 package goraytracer
 
-func NewCamera(aspectRatio float64) Camera {
+import "math"
+
+// DegreesToRadians converts degrees to radians
+func DegreesToRadians(degrees float64) float64 {
+	return degrees * math.Pi / 180.0
+}
+
+// NewCamera creates a new camera with vfov (vertical field of view in degrees) and aspectRatio.
+func NewCamera(
+	lookfrom Point3,
+	lookat Point3,
+	vup Vec3,
+	vfov float64,
+	aspectRatio float64) Camera {
 	var (
 		// Camera constants
-		viewportHeight = 2.0
+		theta          = DegreesToRadians(vfov)
+		h              = math.Tan(theta / 2.0)
+		viewportHeight = 2.0 * h
 		viewportWidth  = aspectRatio * viewportHeight
-		focalLength    = 1.0
+		w              = UnitVector(Subtract(lookfrom, lookat))
+		u              = UnitVector(Cross(vup, w))
+		v              = Cross(w, u)
 	)
-	o := Point3{}
-	horizontal := NewVec3(viewportWidth, 0.0, 0.0)
-	vertical := NewVec3(0.0, viewportHeight, 0.0)
-	lowerLeftCorner := Point3{}
+
+	origin := lookfrom
+	horizontal := Mult(viewportWidth, u)
+	vertical := Mult(viewportHeight, v)
+	lowerLeftCorner := origin.Clone()
 	lowerLeftCorner.Sub(Div(2.0, horizontal))
 	lowerLeftCorner.Sub(Div(2.0, vertical))
-	lowerLeftCorner.Sub(NewVec3(0.0, 0.0, focalLength))
-	return Camera{o, lowerLeftCorner, horizontal, vertical}
+	lowerLeftCorner.Sub(w)
+	return Camera{origin, lowerLeftCorner, horizontal, vertical}
 }
 
 type camera interface {
@@ -28,10 +46,10 @@ type Camera struct {
 	vertical        Vec3
 }
 
-func (c *Camera) GetRay(u, v float64) Ray {
+func (c *Camera) GetRay(s, t float64) Ray {
 	rayDirection := Subtract(c.lowerLeftCorner, c.origin)
-	rayDirection.Add(Mult(u, c.horizontal))
-	rayDirection.Add(Mult(v, c.vertical))
+	rayDirection.Add(Mult(s, c.horizontal))
+	rayDirection.Add(Mult(t, c.vertical))
 	ray := NewRay(c.origin, rayDirection)
 	return ray
 }
