@@ -1,5 +1,10 @@
 package goraytracer
 
+import (
+	"math"
+	"math/rand"
+)
+
 type Material interface {
 	Scatter(*Ray, *HitRecord) (bool, Color, Ray)
 }
@@ -49,4 +54,47 @@ func (m *Metal) Scatter(in *Ray, rec *HitRecord) (bool, Color, Ray) {
 	scatteredRay := NewRay(rec.P, Add(reflected, Mult(m.fuzz, NewRandomVec3InUnitSphere())))
 	isScattered := (Dot(*scatteredRay.GetDirection(), rec.Normal) > 0.0)
 	return isScattered, m.albedo, scatteredRay
+}
+
+type IDielectric interface {
+	Material
+	GetReflectance(cos, refIdx float64) float64
+}
+
+type Dielectric struct {
+	refractionIndex float64
+}
+
+func NewDielectric(refractionIndex float64) Dielectric {
+	return Dielectric{refractionIndex: refractionIndex}
+}
+
+func (d *Dielectric) Scatter(in *Ray, rec *HitRecord) (bool, Color, Ray) {
+	attenuation := NewColor(1.0, 1.0, 1.0)
+	refractionRatio := d.refractionIndex
+	if rec.FrontFace {
+		refractionRatio = (1.0 / d.refractionIndex)
+	}
+	unitDir := in.GetDirection().Unit()
+	negUnitDir := in.GetDirection().Unit()
+	negUnitDir.Neg()
+	cosTheta := math.Min(Dot(negUnitDir, rec.Normal), 1.0)
+	sinTheta := math.Sqrt(1.0 - cosTheta*cosTheta)
+	cannotRefract := refractionRatio*sinTheta > 1.0
+	direction := Vec3{}
+	if cannotRefract || d.GetReflectance(cosTheta, refractionRatio) > rand.Float64() {
+		direction = Reflect(unitDir, rec.Normal)
+	} else {
+		direction = Refract(unitDir, rec.Normal, refractionRatio)
+	}
+	scattered := NewRay(rec.P, direction)
+	return true, attenuation, scattered
+}
+
+func (d *Dielectric) GetReflectance(cos, refIdx float64) float64 {
+	// Use Schlick's approximation for reflectance.
+	// https://en.wikipedia.org/wiki/Schlick%27s_approximation
+	r0 := (1 - refIdx) / (1 + refIdx)
+	r0 = r0 * r0
+	return r0 + (1-r0)*math.Pow(1-cos, 5)
 }

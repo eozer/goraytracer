@@ -33,12 +33,14 @@ func main() {
 	world.Add(&centerSphere)
 
 	// Put a reflective metal material to the left
-	leftMat := grt.NewMetal(grt.NewColor(0.8, 0.8, 0.8), 0.3)
-	leftSphere := grt.NewSphere(grt.NewPoint3(-1.0, 0, -1.0), 0.5, &leftMat)
+	// leftMat := grt.NewMetal(grt.NewColor(0.8, 0.8, 0.8), 0.3)
+	leftMat := grt.NewDielectric(1.5)
+	leftSphere := grt.NewSphere(grt.NewPoint3(-1.0, 0, -1.0), -0.5, &leftMat)
 	world.Add(&leftSphere)
 
 	// Put second reflective metal material to the right
-	rightMat := grt.NewMetal(grt.NewColor(0.8, 0.6, 0.2), 1.0)
+	// rightMat := grt.NewDielectric(1.5)
+	rightMat := grt.NewMetal(grt.NewColor(0.8, 0.6, 0.2), 0.0)
 	rightSphere := grt.NewSphere(grt.NewPoint3(1.0, 0, -1.0), 0.5, &rightMat)
 	world.Add(&rightSphere)
 

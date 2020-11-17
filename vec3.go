@@ -104,6 +104,15 @@ func Reflect(v, n Vec3) Vec3 {
 	return Subtract(v, Mult(2*Dot(v, n), n))
 }
 
+func Refract(uv, n Vec3, etaI_over_etaT float64) Vec3 {
+	negUv := uv.Clone()
+	negUv.Neg()
+	cosTheta := math.Min(1.0, Dot(negUv, n))
+	rPerpendicular := Mult(etaI_over_etaT, Add(uv, Mult(cosTheta, n)))
+	rParallel := Mult(-math.Sqrt(math.Abs(1.0-rPerpendicular.SqrLen())), n)
+	return Add(rPerpendicular, rParallel)
+}
+
 type Vector interface {
 	Clone() Vec3
 	GetX() float64
