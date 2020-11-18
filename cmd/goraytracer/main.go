@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	// TODO: Change GOPATH in .devcontainer
-	grt "goraytracer"
+	grt "github.com/eozer/goraytracer"
 	"math/rand"
 	"os"
 )
