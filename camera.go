@@ -38,6 +38,7 @@ func NewCamera(
 
 type camera interface {
 	GetRay(float64, float64) Ray
+	GetOrigin() Point3
 }
 
 type Camera struct {
@@ -61,4 +62,8 @@ func (c *Camera) GetRay(s, t float64) Ray {
 	rayDirection.Add(Mult(t, c.vertical))
 	ray := NewRay(rayOrigin, rayDirection)
 	return ray
+}
+
+func (c *Camera) GetOrigin() Point3 {
+	return c.origin
 }
