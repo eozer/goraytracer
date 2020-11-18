@@ -4,7 +4,7 @@
 
 # How to install?
 ```bash
-$ (cd $(mktemp -d); GO111MODULE=on go get github.com/eozer/goraytracer@0.0.1)
+$ go get github.com/eozer/goraytracer
 ```
 
 # How to use?
