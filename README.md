@@ -1,5 +1,5 @@
 # goraytracer
-`goraytracer` is a yet another implemention of "Ray Tracing in One Weekend" book [1]. I highly recommend it for everybody who is interested in learning the fundamentals of ray tracing. In the end of the book 1, you can create some cool looking images like this one: [assets/17-randomworld](assets/17-randomworld.png)
+`goraytracer` is a yet another implemention of "Ray Tracing in One Weekend" book [1]. I highly recommend it for everybody who is interested in learning the fundamentals of ray tracing. In the end of the book 1, you can create some cool looking images like this one: ![assets/17-randomworld](assets/17-randomworld.png)
 
 
 # How to install?
