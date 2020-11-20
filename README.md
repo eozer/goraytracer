@@ -4,7 +4,7 @@
 
 # How to install?
 ```bash
-$ go get github.com/eozer/goraytracer
+$ go get github.com/eozer/goraytracer/cmd/goraytracer
 ```
 
 # How to use?
